@@ -1,0 +1,33 @@
+# build stage
+FROM microsoft/aspnetcore-build:2 AS build-env
+
+WORKDIR /generator
+# restore
+
+# copy project to current working directopy /api
+COPY api/api.csproj ./api/
+RUN dotnet restore api/api.csproj
+
+COPY tests/tests.csproj ./tests/
+RUN dotnet restore tests/tests.csproj
+
+# copy source from build context to current dir
+
+COPY . .
+
+# test - if tests fail, we dont get an image, else we do
+
+RUN dotnet test tests/tests.csproj
+
+# publish
+
+RUN dotnet publish api/api.csproj -o /publish
+
+# runtime stage - only the image will be kept at the end
+
+FROM microsoft/aspnetcore:2
+
+# copy files from the build env
+COPY --from=build-env /publish /publish
+WORKDIR /publish
+ENTRYPOINT ["dotnet", "api.dll"]
