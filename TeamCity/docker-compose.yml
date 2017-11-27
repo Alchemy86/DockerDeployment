@@ -10,7 +10,7 @@ services:
       - 8111:8111
     restart: unless-stopped
   teamcity-agent:
-    image: jetbrains/teamcity-minimal-agent:2017.1.5
+    image: jetbrains/teamcity-agent:2017.1.5
     environment:
       SERVER_URL: http://teamcity:8111
     # adds the capacity to interact with docker - allows it to run anything it can run in an image
