@@ -2,22 +2,22 @@ version: '3.1'
 
 services:
   teamcity:
-    image: jetbrains/teamcity-server:2017.1.2
+    image: jetbrains/teamcity-server:2017.1.5
     volumes:
       - teamcity-server-datadir:/data/teamcity_server/datadir
       - teamcity-server-logs:/opt/teamcity/logs
     ports:
       - 8111:8111
+    restart: unless-stopped
   teamcity-agent:
-    image: jetbrains/teamcity-agent:2017.1.2
+    image: jetbrains/teamcity-minimal-agent:2017.1.5
     environment:
-      # uses the name set above. get ip itself
       SERVER_URL: http://teamcity:8111
     # adds the capacity to interact with docker - allows it to run anything it can run in an image
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
 
-# available volumes
 volumes:
   teamcity-server-datadir:
   teamcity-server-logs:
